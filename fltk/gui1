@@ -1,1 +1,58 @@
+# data file for the Fltk User Interface Designer (fluid)
+version 1.0304
+header_name {.h}
+code_name {.cxx}
+decl {\#include "../plc_connect.h"} {public global
+}
 
+decl {\#include <math.h>} {public global
+}
+
+decl {plc_connect *plc;} {private local
+}
+
+Function {callback(void*)} {open return_type void
+} {
+  code {mostrar_valor->text(plc->multiline_text());
+  Fl::repeat_timeout(1.0, callback);} {selected
+  }
+}
+
+Function {make_window(plc_connect *nplc)} {open
+} {
+  code {plc=nplc;
+Fl::add_timeout(1.0, callback);} {}
+  Fl_Window flt_window {
+    label {HRH Conect PLC} open
+    xywh {776 88 530 680} type Double visible
+  } {
+    Fl_Input vmemory {
+      label Vmemory
+      xywh {40 110 115 40} align 1
+    }
+    Fl_Button {} {
+      label add
+      callback {plc->read_plc_add_dir(atoi(vmemory->value()),Vm_count->value());}
+      xywh {290 100 55 40}
+    }
+    Fl_Button {} {
+      label Start
+      callback {//stop_plc_comunic();
+plc->escribir_plc();}
+      xywh {50 40 85 40}
+    }
+    Fl_Button {} {
+      label Stop
+      callback {//start_plc_comunic();}
+      xywh {165 40 85 40}
+    }
+    Fl_Spinner Vm_count {
+      label count
+      xywh {190 115 55 25} align 1
+    }
+    Fl_Output mostrar_valor {
+      label Valores
+      xywh {115 200 340 440} type Multiline align 1
+    }
+  }
+}
